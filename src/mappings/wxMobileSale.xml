@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wxMobileSale">
+	<select id="wxmobilesale_select" parameterType="wxMobileSale" resultType="wxMobileSale">
+    	SELECT * FROM sy_wx_mobile_sale
+		<where>
+			1=1
+			<if test="object.hasSale != -1">
+				AND hasSale=#{object.hasSale}
+			</if>
+			<if test="object.free != null  and object.free != -1">
+				AND free=#{object.free}
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'scalNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'anyNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'endNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}
+			</if>
+			<if test="object.operator !=null and object.operator != '' and object.operator != '-1' and object.operator !=-1 ">
+				AND operator = #{object.operator}
+			</if>
+			<if test="object.province !=null and object.province != '' ">
+				AND province like "%"#{object.province}"%"
+			</if>
+			<if test="object.city !=null and object.city != '' ">
+				AND city like "%"#{object.city}"%"
+			</if>
+			<if test="object.endPrice !=null and object.endPrice != '' ">
+				AND price <![CDATA[ < ]]> #{object.endPrice}
+			</if>
+			<if test="object.startPrice !=null and object.startPrice != '' ">
+				AND price <![CDATA[ >= ]]> #{object.startPrice}
+			</if>
+			<if test="object.ids !=null and object.ids != '' ">
+				AND id in
+				<foreach collection="object._ids" item="id" index="index" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+			<if test="object.preferenceStr !=null and object.preferenceStr != '' ">
+				<foreach collection="object.preference" item="preference" index="index" >
+					AND mobileNum not like	 "%"#{preference}"%"
+				</foreach>
+			</if>
+			<if test="object.startLikeLaw !=null and object.startLikeLaw.size()>0 ">
+				AND
+				<foreach collection="object.startLikeLaw"  item="startLaw" index="index" open="(" close=")" separator="or" >
+					mobileNum  like "%"#{startLaw}
+				</foreach>
+			</if>
+
+			<if test="object.dobleLikeLaw !=null and object.dobleLikeLaw.size()>0 ">
+				AND
+				<foreach collection="object.dobleLikeLaw"  item="dobleLaw" index="index" open="(" close=")" separator="or" >
+					mobileNum  like	 "%"#{dobleLaw}"%"
+				</foreach>
+			</if>
+		</where>
+    </select>
+	<select id="wxmobilesale_count" parameterType="searchPageUtil" resultType="int">
+		SELECT count(*) FROM sy_wx_mobile_sale
+		<where>
+			1=1
+			<if test="object.hasSale != -1">
+				AND hasSale=#{object.hasSale}
+			</if>
+			<if test="object.free != null  and object.free != -1">
+				AND free=#{object.free}
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'scalNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'anyNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'endNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.operator !=null and object.operator != '' and object.operator != '-1' and object.operator !=-1 ">
+				AND operator = #{object.operator}
+			</if>
+			<if test="object.province !=null and object.province != '' ">
+				AND province like "%"#{object.province}"%"
+			</if>
+			<if test="object.city !=null and object.city != '' ">
+				AND city like "%"#{object.city}"%"
+			</if>
+			<if test="object.endPrice !=null and object.endPrice != '' ">
+				AND price <![CDATA[ < ]]> #{object.endPrice}
+			</if>
+			<if test="object.startPrice !=null and object.startPrice != '' ">
+				AND price <![CDATA[ >= ]]> #{object.startPrice}
+			</if>
+			<if test="object.ids !=null and object.ids != '' ">
+				AND id in
+				<foreach collection="object._ids" item="id" index="index" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+			<if test="object.startLikeLaw !=null and object.startLikeLaw.size()>0 ">
+				AND
+				<foreach collection="object.startLikeLaw"  item="startLaw" index="index" open="(" close=")" separator="or" >
+					mobileNum  like "%"#{startLaw}
+				</foreach>
+			</if>
+			<if test="object.dobleLikeLaw !=null and object.dobleLikeLaw.size()>0 ">
+				AND
+				<foreach collection="object.dobleLikeLaw"  item="dobleLaw" index="index" open="(" close=")" separator="or" >
+					mobileNum  like	 "%"#{dobleLaw}"%"
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="wxmobilesale_pageList" parameterType="searchPageUtil" resultType="wxMobileSale">
+		SELECT s.*  FROM sy_wx_mobile_sale s
+		<where>
+			1=1
+			<if test="object.hasSale != -1">
+				AND hasSale=#{object.hasSale}
+			</if>
+			<if test="object.free != null and object.free != -1 ">
+				AND free=#{object.free}
+			</if>
+<!--			<if test="object !=null and object.hasSale != null and object.hasSale != '' and  object.hasSale != '-1'.toString()">-->
+<!--				AND hasSale=#{object.hasSale}-->
+<!--			</if>-->
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'scalNum' and object.mobileNum !=null and object.mobileNum != ''">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'anyNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.searchType !=null and object.searchType != '' and object.searchType == 'endNum' and object.mobileNum !=null and object.mobileNum != '' ">
+				AND mobileNum like "%"#{object.mobileNum}"%"
+			</if>
+			<if test="object.operator !=null and object.operator != '' and object.operator != '-1' and object.operator !=-1 ">
+				AND operator = #{object.operator}
+			</if>
+			<if test="object.notLike !=null and object.notLike != '' ">
+				AND mobileNum not like "%"#{object.notLike}"%"
+			</if>
+			<if test="object.province !=null and object.province != '' ">
+				AND province like "%"#{object.province}"%"
+			</if>
+			<if test="object.city !=null and object.city != '' ">
+				AND city like "%"#{object.city}"%"
+			</if>
+			<if test="object.endPrice !=null and object.endPrice != '' ">
+				AND price <![CDATA[ < ]]> #{object.endPrice}
+			</if>
+			<if test="object.startPrice !=null and object.startPrice != '' ">
+				AND price <![CDATA[ >= ]]> #{object.startPrice}
+			</if>
+			<if test="object.ids !=null and object.ids != '' ">
+				AND id in
+				<foreach collection="object._ids" item="id" index="index" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+			<if test="object.preferenceStr !=null and object.preferenceStr != '' ">
+				<foreach collection="object.preference" item="preference" index="index" >
+					AND mobileNum not like	 "%"#{preference}"%"
+				</foreach>
+			</if>
+			<if test="object.startLikeLaw !=null and object.startLikeLaw.size()>0 ">
+				AND
+				<foreach collection="object.startLikeLaw"  item="startLaw" index="index" open="(" close=")" separator="or" >
+					mobileNum  like "%"#{startLaw}
+				</foreach>
+			</if>
+			<if test="object.dobleLikeLaw !=null and object.dobleLikeLaw.size()>0 ">
+				AND
+				<foreach collection="object.dobleLikeLaw"  item="dobleLaw" index="index" open="(" close=")" separator="or" >
+					mobileNum  like	 "%"#{dobleLaw}"%"
+				</foreach>
+			</if>
+		</where>
+		<if test="page.orderBy !=null and page.orderBy != '' and page.order !=null and page.order != '' ">
+			ORDER BY ${page.orderBy} ${page.order}
+		</if>
+		 LIMIT ${startRow},${page.pageRecordCount}
+	</select>
+	<select id="wxmobilesaledetail_select" parameterType="wxMobileSale" resultType="wxMobileSale">
+    	SELECT * FROM sy_wx_mobile_sale
+    	<where>
+    		1=1
+    		<if test="id !=null and id != ''">
+				AND id=#{id}
+			</if>
+    	</where>
+    </select>
+
+	<insert id="advmod_insert" parameterType="advMod">
+    	INSERT INTO hy_advmod (typeId, imgUrl, rid) VALUES (#{typeId}, #{imgUrl}, #{rid})
+    </insert>
+	<delete id="wxmobilesale_delete" parameterType="wxMobileSale">
+    	DELETE FROM sy_wx_mobile_sale WHERE id=#{id}
+    </delete>
+	<update id="wxmobilesale_update" parameterType="wxmobilesale">
+		UPDATE sy_wx_mobile_sale
+		<set>
+			<if test="hasSale != null and hasSale != ''">hasSale=#{hasSale},</if>
+			<if test="province != null and province != ''">province=#{province},</if>
+			<if test="city != null and city != ''">city=#{city},</if>
+			<if test="price != null and price != ''">price=#{price},</if>
+			<if test="mobileNum != null and mobileNum != ''">mobileNum=#{mobileNum},</if>
+			<if test="telephoneBill != null and telephoneBill != ''">telephoneBill=#{telephoneBill},</if>
+			<if test="minimumConsumption != null and minimumConsumption != ''">minimumConsumption=#{minimumConsumption},</if>
+			<if test="details != null and details != ''">details=#{details},</if>
+			<if test="operator != null and operator != ''">operator=#{operator},</if>
+			<if test="free != null and free != ''">free=#{free},</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<insert id="wxmobilesale_insert" parameterType="wxMobileSale">
+    	INSERT INTO sy_wx_mobile_sale (province,city,price,mobileNum,telephoneBill,minimumConsumption,hasSale,details,operator,free) VALUES
+    	(#{province},#{city},#{price},#{mobileNum},#{telephoneBill},#{minimumConsumption},#{hasSale},#{details},#{operator},#{free})
+    </insert>
+
+	<select id="wxmobilesaleselectMobile_count" parameterType="wxMobileSale" resultType="int">
+		SELECT count(*) FROM sy_wx_mobile_sale where 1=1
+		<if test="mobileNum != null and mobileNum != ''">
+			AND mobileNum = #{mobileNum}
+		</if>
+	</select>
+</mapper>
